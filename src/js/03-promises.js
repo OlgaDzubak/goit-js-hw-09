@@ -17,7 +17,7 @@ function onBtnClick(event){                                      // Функці
   let delay = delayFirst;
 
   if (amount){
-    intervalId = setInterval(()=>{                                                  // створюємо функцію setInterval і виконуємо її із затримокю delay до тих пір, поки position<=amount
+    const intervalId = setInterval(()=>{                                                  // створюємо функцію setInterval і виконуємо її із затримокю delay до тих пір, поки position<=amount
       
       createPromise(position, delay)
         .then( ({position, delay}) => { Notiflix.Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);})
