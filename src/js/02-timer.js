@@ -3,7 +3,6 @@ import "flatpickr/dist/flatpickr.min.css";
 import Notiflix from 'notiflix';
 
 // Описуємо змінні -------------------------------------------------
-
 const dateInput = document.querySelector("#datetime-picker");
 const btn_start = document.querySelector("button[data-start]");
 const timerElement = document.querySelector(".timer");
@@ -14,9 +13,7 @@ const daysElement = document.querySelector("span[data-days]");
 const hoursElement = document.querySelector("span[data-hours]");
 const minutesElement = document.querySelector("span[data-minutes]");
 const secondsElement = document.querySelector("span[data-seconds]");
-let intervalId = null;
 let selectedDate = null;
-let deltaTime = null;
 const options = {
     enableTime: true,
     time_24hr: true,
@@ -64,19 +61,17 @@ labelElements.forEach((item)=>{
 
 // Ставимо слухач на кнопку Start ----------------------------------------------------------
 btn_start.addEventListener('click',()=>{
-    clearInterval(intervalId);                      // Якщо є таймер, що вже запущено, то зупиняємо його, тому що зараз будемо запускати новий таймер
     btn_start.disabled = true;                      // Деактивуємо кнопку Start
-    deltaTime = selectedDate - Date.now();          // Знаходимо різницю між обраною датою, та поточною датою
-    if (deltaTime > 0) {
-        startCountDownTimer(deltaTime)              // Запускаємо таймер зворотнього відліку
-    } else{
-        Notiflix.Notify.failure("Please choose a date in the future");//
-    }          
+    dateInput.disabled = true;
+    startCountDownTimer();              // Запускаємо таймер зворотнього відліку       
 });
 
 //Функція таймеру зворотнього відліку з одиницею відліку, що дорівнює 1000 мілісекунд (1 секунда)
-function startCountDownTimer(deltaTime){
-    intervalId = setInterval(() => {
+function startCountDownTimer(){
+    
+    let intervalId = setInterval(() => {
+
+        let deltaTime = selectedDate - Date.now();
         const {days, hours, minutes, seconds} = convertMs(deltaTime);
 
         daysElement.textContent = String(days).padStart(2,'0');
@@ -89,12 +84,10 @@ function startCountDownTimer(deltaTime){
         labelElements[2].textContent = declensionNum(minutes,['хвилина', 'хвилини', 'хвилин']);
         labelElements[3].textContent = declensionNum(seconds,['секунда', 'секунди', 'секунд']);
 
-        if (deltaTime === 0 ){ 
+        if (deltaTime < 1000 ){ 
             clearInterval(intervalId);
             Notiflix.Notify.success('Час вийшов!');
-        }else{
-            deltaTime -= 1000;
-            if (deltaTime < 0) { deltaTime = 0; }
+            dateInput.disabled = false;
         }
     }, 1000);
 }
