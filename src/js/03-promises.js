@@ -31,6 +31,7 @@ function onBtnClick(event){                                      // Функці
 } 
 
 function createPromise(position, delay) {                       // Функція створення проміса номер=position із затримкою delay
+  
   const promise = new Promise((resolve, reject) => {
     
     const shouldResolve = Math.random() > 0.3;
